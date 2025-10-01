@@ -90,38 +90,58 @@ class InstagramAIDetector {
     
     // Initial check
     this.checkForNewContent();
+    
+    // Periodic check every 2 seconds to catch new content
+    setInterval(() => {
+      if (this.settings.autoDetect) {
+        this.checkForNewContent();
+      }
+    }, 2000);
   }
   
   checkForNewContent() {
     if (!this.settings.autoDetect) return;
     
-    // Find Instagram reels and posts
-    const reels = document.querySelectorAll('article[role="presentation"]');
+    // Find Instagram reels and posts - use more specific selectors
+    const reels = document.querySelectorAll('article[role="presentation"], div[role="presentation"]');
     const videos = document.querySelectorAll('video');
     
-    reels.forEach(reel => {
-      this.analyzeReel(reel);
+    console.log(`Found ${reels.length} reels and ${videos.length} videos`);
+    
+    reels.forEach((reel, index) => {
+      this.analyzeReel(reel, index);
     });
     
-    videos.forEach(video => {
-      this.analyzeVideo(video);
+    videos.forEach((video, index) => {
+      this.analyzeVideo(video, index);
     });
   }
   
-  async analyzeReel(reelElement) {
+  async analyzeReel(reelElement, index) {
     try {
-      // Extract URL from reel
+      // Extract URL from reel - try multiple selectors
       const linkElement = reelElement.querySelector('a[href*="/reel/"]') || 
-                         reelElement.querySelector('a[href*="/p/"]');
+                         reelElement.querySelector('a[href*="/p/"]') ||
+                         reelElement.querySelector('a[href*="/tv/"]') ||
+                         reelElement.closest('a[href*="/reel/"]') ||
+                         reelElement.closest('a[href*="/p/"]');
       
-      if (!linkElement) return;
+      if (!linkElement) {
+        console.log(`No link found for reel ${index}`);
+        return;
+      }
       
       const url = linkElement.href;
+      console.log(`Analyzing reel ${index}: ${url}`);
       
       // Skip if already analyzed
-      if (this.analyzedUrls.has(url)) return;
+      if (this.analyzedUrls.has(url)) {
+        console.log(`Already analyzed: ${url}`);
+        return;
+      }
       
       this.analyzedUrls.add(url);
+      console.log(`New content found: ${url}`);
       
       // Analyze the content
       const result = await this.analyzeContent(url, 'reel');
@@ -135,24 +155,39 @@ class InstagramAIDetector {
     }
   }
   
-  async analyzeVideo(videoElement) {
+  async analyzeVideo(videoElement, index) {
     try {
       // Find parent container that might be a reel
-      let container = videoElement.closest('article[role="presentation"]');
-      if (!container) return;
+      let container = videoElement.closest('article[role="presentation"]') || 
+                     videoElement.closest('div[role="presentation"]');
+      if (!container) {
+        console.log(`No container found for video ${index}`);
+        return;
+      }
       
-      // Extract URL
+      // Extract URL - try multiple selectors
       const linkElement = container.querySelector('a[href*="/reel/"]') || 
-                         container.querySelector('a[href*="/p/"]');
+                         container.querySelector('a[href*="/p/"]') ||
+                         container.querySelector('a[href*="/tv/"]') ||
+                         container.closest('a[href*="/reel/"]') ||
+                         container.closest('a[href*="/p/"]');
       
-      if (!linkElement) return;
+      if (!linkElement) {
+        console.log(`No link found for video ${index}`);
+        return;
+      }
       
       const url = linkElement.href;
+      console.log(`Analyzing video ${index}: ${url}`);
       
       // Skip if already analyzed
-      if (this.analyzedUrls.has(url)) return;
+      if (this.analyzedUrls.has(url)) {
+        console.log(`Already analyzed video: ${url}`);
+        return;
+      }
       
       this.analyzedUrls.add(url);
+      console.log(`New video content found: ${url}`);
       
       // Analyze the content
       const result = await this.analyzeContent(url, 'video');
