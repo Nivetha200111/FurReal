@@ -1,15 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/health.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/analyze-post.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
       "src": "/api/health",
