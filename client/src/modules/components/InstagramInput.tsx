@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { ResultCard } from './ResultCard';
+
+type Analysis = any;
 
 export function InstagramInput() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<Analysis | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function analyze() {
@@ -11,10 +14,13 @@ export function InstagramInput() {
     setError(null);
     setResult(null);
     try {
-      const url = new URL(input);
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/analyze/post?url=${encodeURIComponent(url.toString())}`);
-      const data = await res.json();
+      let urlString = input.trim();
+      if (!urlString.startsWith('http')) urlString = 'https://' + urlString;
+      const url = new URL(urlString);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/analyze/post?url=${encodeURIComponent(url.toString())}`);
+      const data: Analysis = await res.json();
       setResult(data);
+      if (data.error) setError(data.error);
     } catch (e: any) {
       setError('Enter a valid Instagram URL');
     } finally {
@@ -23,7 +29,7 @@ export function InstagramInput() {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <label className="block text-sm">Instagram URL</label>
       <div className="flex gap-2">
         <input
@@ -40,11 +46,16 @@ export function InstagramInput() {
           {loading ? 'Analyzing...' : 'Analyze'}
         </button>
       </div>
-      {error && <p className="text-red-400 text-sm">{error}</p>}
-      {result && (
-        <pre className="bg-neutral-900 border border-neutral-800 rounded p-3 text-xs overflow-auto">
-{JSON.stringify(result, null, 2)}
-        </pre>
+      {error && (
+        <div className="text-sm text-red-300 bg-red-500/10 border border-red-900 rounded p-2">{error}</div>
+      )}
+
+      {loading && (
+        <div className="animate-pulse rounded-xl border border-neutral-800 bg-neutral-900 p-3 h-36" />
+      )}
+
+      {result && !loading && (
+        <ResultCard data={result} />
       )}
     </div>
   );
