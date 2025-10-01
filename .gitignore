@@ -106,3 +106,4 @@ cache/
 
 # Redis dump
 dump.rdb
+.vercel
