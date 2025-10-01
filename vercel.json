@@ -1,13 +1,15 @@
 {
   "version": 2,
-  "functions": {
-    "api/health.js": {
-      "runtime": "nodejs18.x"
+  "builds": [
+    {
+      "src": "api/health.js",
+      "use": "@vercel/node"
     },
-    "api/analyze/post.js": {
-      "runtime": "nodejs18.x"
+    {
+      "src": "api/analyze/post.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/health",
