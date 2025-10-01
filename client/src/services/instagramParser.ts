@@ -6,8 +6,21 @@ export type InstagramTarget =
 
 export function parseInstagramInput(input: string): InstagramTarget | null {
   try {
-    const u = new URL(input);
+    // Handle URLs without protocol
+    let urlString = input.trim();
+    if (!urlString.startsWith('http')) {
+      urlString = 'https://' + urlString;
+    }
+    
+    const u = new URL(urlString);
+    
+    // Check if it's an Instagram URL
+    if (!u.hostname.includes('instagram.com')) {
+      return null;
+    }
+    
     const parts = u.pathname.split('/').filter(Boolean);
+    
     if (parts[0] === 'p' && parts[1]) return { kind: 'post', url: u.toString() };
     if (parts[0] === 'reel' && parts[1]) return { kind: 'reel', reelId: parts[1], url: u.toString() };
     if (parts[0] === 'stories' && parts[1] && parts[2])
