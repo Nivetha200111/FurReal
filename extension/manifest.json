@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "PawPrint AI - Instagram AI Detector",
+  "name": "FurReal - Instagram AI Detector",
   "version": "1.0.0",
   "description": "Detect AI-generated content on Instagram with real-time overlay and child protection mode",
   "permissions": [
@@ -26,7 +26,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "PawPrint AI",
+    "default_title": "FurReal",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",

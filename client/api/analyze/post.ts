@@ -27,7 +27,7 @@ function extractHashtags(text: string): string[] {
 async function fetchInstagramOEmbed(targetUrl: string) {
 	try {
 		const endpoint = `https://www.instagram.com/oembed/?url=${encodeURIComponent(targetUrl)}&omitscript=true`;
-		const res = await fetch(endpoint, { headers: { 'User-Agent': 'Mozilla/5.0 PawPrintAI' } });
+		const res = await fetch(endpoint, { headers: { 'User-Agent': 'Mozilla/5.0 FurRealAI' } });
 		if (!res.ok) return null;
 		return (await res.json()) as any;
 	} catch {

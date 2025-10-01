@@ -67,7 +67,9 @@ export async function scrapeInstagramPublic(url: string): Promise<ScrapedPostMet
     page = await browser.newPage();
     
     // Set user agent and viewport
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    await page.setExtraHTTPHeaders({
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    });
     await page.setViewportSize({ width: 1920, height: 1080 });
     
     // Add stealth measures
@@ -225,7 +227,9 @@ export async function scrapeInstagramProfile(username: string): Promise<{
     page = await browser.newPage();
     
     // Set user agent and viewport
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    await page.setExtraHTTPHeaders({
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    });
     await page.setViewportSize({ width: 1920, height: 1080 });
     
     // Navigate to the profile

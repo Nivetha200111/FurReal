@@ -50,7 +50,7 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <h1>PawPrint AI</h1>
+        <h1>FurReal</h1>
         <p className="subtitle">AI Detection for Instagram</p>
         
         <div className="input-section">

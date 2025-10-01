@@ -1,4 +1,4 @@
-import { Queue, Worker, QueueScheduler, JobsOptions, Job } from 'bullmq';
+import { Queue, Worker, JobsOptions, Job } from 'bullmq';
 import IORedis from 'ioredis';
 import { runAIDetectionPipeline } from '../services/aiDetector.js';
 import { scrapeInstagramPublic } from '../services/instagramScraper.js';
@@ -12,7 +12,7 @@ const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379'
 
 export const analysisQueueName = 'analysis-queue';
 export const analysisQueue = new Queue(analysisQueueName, { connection });
-new QueueScheduler(analysisQueueName, { connection });
+// QueueScheduler removed in newer BullMQ versions
 
 export interface AnalysisJobData {
   postUrl?: string;

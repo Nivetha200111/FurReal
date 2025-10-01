@@ -1,6 +1,6 @@
-// Background script for PawPrint AI extension
+// Background script for FurReal extension
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('PawPrint AI extension installed');
+  console.log('FurReal extension installed');
   
   // Set default settings
   chrome.storage.sync.set({
@@ -32,26 +32,42 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Analyze Instagram content using our API
+// Analyze Instagram content using our API with timeout
 async function analyzeInstagramContent(url, type) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+  
   try {
-    const response = await fetch('https://furreal-2rfu9sdwi-nivethas-projects-f7c0732d.vercel.app/api/analyze-post', {
+    // Try the main API first with timeout
+    const response = await fetch('https://furreal-42bjwpxxp-nivethas-projects-f7c0732d.vercel.app/api/analyze-post', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ url, type })
+      body: JSON.stringify({ url, type }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
       throw new Error(`API request failed: ${response.status}`);
     }
     
     const data = await response.json();
-    return data;
+    
+    // Ensure the response has the expected format
+    if (data && data.summary) {
+      return data;
+    } else {
+      throw new Error('Invalid API response format');
+    }
   } catch (error) {
+    clearTimeout(timeoutId);
     console.error('API call failed:', error);
-    // Fallback to mock analysis
+    
+    // Skip local API fallback for speed - go straight to mock
+    // Final fallback to mock analysis (faster)
     return {
       summary: {
         aiProbability: Math.random() * 100,
@@ -84,14 +100,5 @@ async function updateStats(newStats) {
   });
 }
 
-// Handle tab updates to inject content script
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url?.includes('instagram.com')) {
-    chrome.scripting.executeScript({
-      target: { tabId },
-      files: ['content.js']
-    }).catch(() => {
-      // Content script might already be injected
-    });
-  }
-});
+// Content script is automatically injected via manifest.json
+// No need for manual injection to prevent duplicates

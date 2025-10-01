@@ -128,12 +128,17 @@ async function downloadDirect(
   
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
       const response = await fetch(url, {
-        timeout,
+        signal: controller.signal,
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
       });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -147,33 +152,29 @@ async function downloadDirect(
       
       // Download with progress
       let downloadedSize = 0;
-      const reader = response.body?.getReader();
       
-      if (!reader) {
-        throw new Error('No response body reader available');
+      if (!response.body) {
+        throw new Error('No response body available');
       }
       
-      while (true) {
-        const { done, value } = await reader.read();
-        
-        if (done) break;
-        
-        writeStream.write(value);
-        downloadedSize += value.length;
-        
-        // Log progress
-        if (totalSize > 0) {
-          const progress = (downloadedSize / totalSize * 100).toFixed(1);
-          console.log(`Download progress: ${progress}% (${downloadedSize}/${totalSize} bytes)`);
-        }
-      }
+      // Convert to Node.js readable stream
+      const stream = response.body as any;
       
-      writeStream.end();
-      
-      // Wait for write to complete
-      await new Promise((resolve, reject) => {
-        writeStream.on('finish', resolve);
-        writeStream.on('error', reject);
+      return new Promise((resolve, reject) => {
+        stream.on('data', (chunk: Buffer) => {
+          downloadedSize += chunk.length;
+          writeStream.write(chunk);
+        });
+        
+        stream.on('end', () => {
+          writeStream.end();
+          resolve({
+            filePath: outputPath,
+            size: downloadedSize
+          });
+        });
+        
+        stream.on('error', reject);
       });
       
       // Get file info

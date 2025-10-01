@@ -1,6 +1,6 @@
-# PawPrint AI - Instagram AI Animal Video Detector
+# FurReal - Instagram AI Animal Video Detector
 
-This is a full-stack project scaffold for PawPrint AI, an Instagram-focused app that detects AI-generated animal videos.
+This is a full-stack project scaffold for FurReal, an Instagram-focused app that detects AI-generated animal videos.
 
 ## Tech Stack
 - Client: React + TypeScript + Vite + Tailwind
@@ -20,7 +20,7 @@ This is a full-stack project scaffold for PawPrint AI, an Instagram-focused app 
 ## Server Environment (.env)
 ```
 PORT=3001
-DATABASE_URL=postgresql://postgres:postgres@db:5432/pawprint
+DATABASE_URL=postgresql://postgres:postgres@db:5432/furreal
 REDIS_URL=redis://redis:6379
 REPLICATE_API_TOKEN=
 HUGGINGFACE_API_KEY=

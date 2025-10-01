@@ -1,4 +1,4 @@
-// Popup script for PawPrint AI extension
+// Popup script for FurReal extension
 document.addEventListener('DOMContentLoaded', async () => {
   const extensionToggle = document.getElementById('extensionToggle');
   const childModeToggle = document.getElementById('childModeToggle');

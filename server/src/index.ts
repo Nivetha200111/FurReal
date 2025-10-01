@@ -14,6 +14,6 @@ export default app;
 // For local development
 if (process.env.NODE_ENV !== 'production') {
   server.listen(PORT, () => {
-    console.log(`PawPrint AI server listening on http://localhost:${PORT}`);
+    console.log(`FurReal server listening on http://localhost:${PORT}`);
   });
 }

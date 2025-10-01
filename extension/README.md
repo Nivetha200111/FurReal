@@ -1,4 +1,4 @@
-# PawPrint AI - Instagram Browser Extension
+# FurReal AI - Instagram Browser Extension
 
 A Chrome extension that detects AI-generated content on Instagram in real-time with overlay warnings and child protection mode.
 
