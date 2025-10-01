@@ -41,10 +41,6 @@
                         <span id="probability" class="px-4 py-2 rounded-full text-white font-bold text-lg"></span>
                     </div>
                     
-                    <div class="space-y-2">
-                        <p><strong>Author:</strong> <span id="author" class="text-gray-600"></span></p>
-                        <p><strong>Type:</strong> <span id="type" class="text-gray-600"></span></p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -112,8 +108,6 @@
                 document.getElementById('label').textContent = label;
                 document.getElementById('probability').textContent = `AI: ${aiProbability.toFixed(1)}%`;
                 document.getElementById('probability').className = `px-4 py-2 rounded-full text-white font-bold text-lg ${badgeClass}`;
-                document.getElementById('author').textContent = `@${username}`;
-                document.getElementById('type').textContent = postType;
                 result.classList.remove('hidden');
                 
             } catch (error) {
