@@ -3,11 +3,17 @@
   "builds": [
     {
       "src": "api/health.js",
-      "use": "@vercel/node@3.0.7"
+      "use": "@vercel/node@3.0.7",
+      "config": {
+        "nodeVersion": "18.x"
+      }
     },
     {
       "src": "api/analyze-post.js",
-      "use": "@vercel/node@3.0.7"
+      "use": "@vercel/node@3.0.7",
+      "config": {
+        "nodeVersion": "18.x"
+      }
     }
   ]
 }
