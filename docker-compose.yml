@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pawprint
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+  server:
+    build: ./server
+    depends_on:
+      - db
+      - redis
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pawprint
+      REDIS_URL: redis://redis:6379
+      PUPPETEER_HEADLESS: 'true'
+      USER_AGENT_ROTATION: 'true'
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server:/app
+      - server_node_modules:/app/node_modules
+  client:
+    build: ./client
+    depends_on:
+      - server
+    environment:
+      VITE_API_BASE_URL: http://localhost:3001/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - client_node_modules:/app/node_modules
+volumes:
+  db_data:
+  server_node_modules:
+  client_node_modules:
