@@ -9,5 +9,19 @@
       "src": "api/analyze-post.js",
       "use": "@vercel/node@4.0.0"
     }
+  ],
+  "routes": [
+    {
+      "src": "/api/health",
+      "dest": "/api/health.js"
+    },
+    {
+      "src": "/api/analyze/post",
+      "dest": "/api/analyze-post.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }
