@@ -41,15 +41,9 @@
                         <span id="probability" class="px-4 py-2 rounded-full text-white font-bold text-lg"></span>
                     </div>
                     
-                    <div class="space-y-2 mb-4">
+                    <div class="space-y-2">
                         <p><strong>Author:</strong> <span id="author" class="text-gray-600"></span></p>
                         <p><strong>Type:</strong> <span id="type" class="text-gray-600"></span></p>
-                        <p><strong>Mode:</strong> <span id="mode" class="text-gray-600"></span></p>
-                    </div>
-
-                    <div id="signals" class="hidden">
-                        <h4 class="font-bold text-gray-800 mb-2">Analysis Signals:</h4>
-                        <ul id="signalsList" class="space-y-2"></ul>
                     </div>
                 </div>
             </div>
@@ -115,29 +109,11 @@
                     badgeClass = 'bg-yellow-500';
                 }
                 
-                const signals = [
-                    'Demo analysis completed',
-                    'Real username extracted',
-                    'Ready for real API integration'
-                ];
-                
                 document.getElementById('label').textContent = label;
                 document.getElementById('probability').textContent = `AI: ${aiProbability.toFixed(1)}%`;
                 document.getElementById('probability').className = `px-4 py-2 rounded-full text-white font-bold text-lg ${badgeClass}`;
                 document.getElementById('author').textContent = `@${username}`;
                 document.getElementById('type').textContent = postType;
-                document.getElementById('mode').textContent = 'Demo';
-                
-                const signalsList = document.getElementById('signalsList');
-                signalsList.innerHTML = '';
-                signals.forEach(signal => {
-                    const li = document.createElement('li');
-                    li.className = 'bg-white p-3 rounded-lg border-l-4 border-purple-500 text-gray-700';
-                    li.textContent = signal;
-                    signalsList.appendChild(li);
-                });
-                
-                document.getElementById('signals').classList.remove('hidden');
                 result.classList.remove('hidden');
                 
             } catch (error) {
