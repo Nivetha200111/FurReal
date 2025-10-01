@@ -69,6 +69,37 @@
             result.classList.add('hidden');
             
             try {
+                // Extract real username from Instagram URL
+                let username = 'sample_user';
+                let postType = 'Post';
+                
+                if (url.includes('instagram.com/')) {
+                    // Extract username from Instagram URL
+                    const urlParts = url.split('/');
+                    const instagramIndex = urlParts.findIndex(part => part.includes('instagram.com'));
+                    
+                    if (instagramIndex !== -1 && urlParts[instagramIndex + 1]) {
+                        username = urlParts[instagramIndex + 1].replace('@', '');
+                    }
+                    
+                    // Determine post type
+                    if (url.includes('/reel/')) {
+                        postType = 'Reel';
+                    } else if (url.includes('/p/')) {
+                        postType = 'Post';
+                    } else if (url.includes('/stories/')) {
+                        postType = 'Story';
+                    } else if (url.includes('/tv/')) {
+                        postType = 'IGTV';
+                    } else {
+                        postType = 'Profile';
+                    }
+                } else if (url.startsWith('@')) {
+                    // Handle @username format
+                    username = url.replace('@', '');
+                    postType = 'Profile';
+                }
+                
                 // Simulate analysis
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 
@@ -86,15 +117,15 @@
                 
                 const signals = [
                     'Demo analysis completed',
-                    'Random probability generated',
+                    'Real username extracted',
                     'Ready for real API integration'
                 ];
                 
                 document.getElementById('label').textContent = label;
                 document.getElementById('probability').textContent = `AI: ${aiProbability.toFixed(1)}%`;
                 document.getElementById('probability').className = `px-4 py-2 rounded-full text-white font-bold text-lg ${badgeClass}`;
-                document.getElementById('author').textContent = '@sample_user';
-                document.getElementById('type').textContent = url.includes('/reel/') ? 'Reel' : 'Post';
+                document.getElementById('author').textContent = `@${username}`;
+                document.getElementById('type').textContent = postType;
                 document.getElementById('mode').textContent = 'Demo';
                 
                 const signalsList = document.getElementById('signalsList');
