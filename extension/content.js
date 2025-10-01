@@ -228,11 +228,16 @@ class InstagramAIDetector {
   
   async analyzeVideo(videoElement, index) {
     try {
-      // Find parent container
-      let container = videoElement.closest('div[role="presentation"]');
+      // Find parent container - try multiple selectors
+      let container = videoElement.closest('div[role="presentation"]') || 
+                     videoElement.closest('article') ||
+                     videoElement.closest('div[data-testid*="post"]') ||
+                     videoElement.closest('div[data-testid*="reel"]') ||
+                     videoElement.parentElement;
+      
       if (!container) {
-        console.log(`⏭️ No container found for video ${index}, skipping`);
-        return;
+        console.log(`⏭️ No container found for video ${index}, using video element itself`);
+        container = videoElement;
       }
       
       // Generate a mock URL for this video
@@ -392,4 +397,17 @@ window.testPawPrint = () => {
   detector.checkForNewContent();
 };
 
-console.log('💡 Type testPawPrint() in console to manually test detection');
+// Add function to force show overlay for testing
+window.showTestOverlay = () => {
+  console.log('🧪 Showing test overlay...');
+  const element = document.querySelector('div[role="presentation"]') || document.body;
+  const result = {
+    summary: {
+      aiProbability: 85,
+      label: 'Likely AI'
+    }
+  };
+  detector.handleAnalysisResult(element, result, 'test_url');
+};
+
+console.log('💡 Type testPawPrint() to test detection or showTestOverlay() to force show overlay');
