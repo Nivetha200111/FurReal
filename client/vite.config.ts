@@ -13,6 +13,6 @@ export default defineConfig({
     minify: true,
   },
   define: {
-    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.VITE_API_BASE_URL || 'https://pawprint-ai-server.vercel.app/api'),
+    'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.VITE_API_BASE_URL || '/api'),
   },
 });
