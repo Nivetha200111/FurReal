@@ -4,14 +4,10 @@ import { InstagramInput } from '../modules/components/InstagramInput';
 export function App() {
   const [health, setHealth] = useState<string>('checking...');
   useEffect(() => {
-    // For now, show as online since we're using mock responses
-    setHealth('online');
-    
-    // Uncomment this when you have a real backend:
-    // fetch(import.meta.env.VITE_API_BASE_URL + '/health'.replace('/api', ''))
-    //   .then(r => r.json())
-    //   .then(d => setHealth(d.status || 'ok'))
-    //   .catch(() => setHealth('offline'));
+    fetch((import.meta.env.VITE_API_BASE_URL || '/api') + '/health')
+      .then(r => r.json())
+      .then(d => setHealth(d.status || 'ok'))
+      .catch(() => setHealth('offline'));
   }, []);
 
   return (
