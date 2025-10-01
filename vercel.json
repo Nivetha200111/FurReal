@@ -1,17 +1,11 @@
 {
   "version": 2,
-  "routes": [
-    {
-      "src": "/api/health",
-      "dest": "/api/health.js"
+  "functions": {
+    "api/health.js": {
+      "runtime": "@vercel/node@3.0.7"
     },
-    {
-      "src": "/api/analyze/post",
-      "dest": "/api/analyze-post.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+    "api/analyze-post.js": {
+      "runtime": "@vercel/node@3.0.7"
     }
-  ]
+  }
 }
