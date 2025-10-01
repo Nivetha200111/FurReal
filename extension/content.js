@@ -1,5 +1,7 @@
 // Content script for PawPrint AI extension
-console.log('PawPrint AI content script loaded');
+console.log('🚀 PawPrint AI content script loaded');
+console.log('📍 Current URL:', window.location.href);
+console.log('🔍 Looking for Instagram content...');
 
 class InstagramAIDetector {
   constructor() {
@@ -100,16 +102,40 @@ class InstagramAIDetector {
   }
   
   checkForNewContent() {
-    if (!this.settings.autoDetect) return;
+    if (!this.settings.autoDetect) {
+      console.log('❌ Auto-detect is disabled');
+      return;
+    }
     
-    // Find Instagram reels and posts - use more specific selectors
-    const reels = document.querySelectorAll('article[role="presentation"], div[role="presentation"]');
+    console.log('🔍 Checking for new content...');
+    
+    // Try multiple selectors for Instagram content
+    const selectors = [
+      'article[role="presentation"]',
+      'div[role="presentation"]',
+      'article',
+      'div[data-testid*="post"]',
+      'div[data-testid*="reel"]'
+    ];
+    
+    let allElements = [];
+    selectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      console.log(`📋 Selector "${selector}": found ${elements.length} elements`);
+      allElements = allElements.concat(Array.from(elements));
+    });
+    
+    // Remove duplicates
+    const uniqueElements = [...new Set(allElements)];
+    console.log(`📊 Total unique elements found: ${uniqueElements.length}`);
+    
+    // Find videos
     const videos = document.querySelectorAll('video');
+    console.log(`🎥 Videos found: ${videos.length}`);
     
-    console.log(`Found ${reels.length} reels and ${videos.length} videos`);
-    
-    reels.forEach((reel, index) => {
-      this.analyzeReel(reel, index);
+    // Analyze each element
+    uniqueElements.forEach((element, index) => {
+      this.analyzeElement(element, index);
     });
     
     videos.forEach((video, index) => {
@@ -117,6 +143,65 @@ class InstagramAIDetector {
     });
   }
   
+  async analyzeElement(element, index) {
+    try {
+      console.log(`🔍 Analyzing element ${index}:`, element);
+      
+      // Try to find any link in this element
+      const linkSelectors = [
+        'a[href*="/reel/"]',
+        'a[href*="/p/"]',
+        'a[href*="/tv/"]',
+        'a[href*="/stories/"]'
+      ];
+      
+      let linkElement = null;
+      for (const selector of linkSelectors) {
+        linkElement = element.querySelector(selector);
+        if (linkElement) {
+          console.log(`✅ Found link with selector "${selector}"`);
+          break;
+        }
+      }
+      
+      // Also check if the element itself is a link
+      if (!linkElement && element.tagName === 'A') {
+        const href = element.getAttribute('href');
+        if (href && (href.includes('/reel/') || href.includes('/p/') || href.includes('/tv/'))) {
+          linkElement = element;
+          console.log(`✅ Element itself is a link: ${href}`);
+        }
+      }
+      
+      if (!linkElement) {
+        console.log(`❌ No link found in element ${index}`);
+        return;
+      }
+      
+      const url = linkElement.href;
+      console.log(`🔗 Found URL: ${url}`);
+      
+      // Skip if already analyzed
+      if (this.analyzedUrls.has(url)) {
+        console.log(`⏭️ Already analyzed: ${url}`);
+        return;
+      }
+      
+      this.analyzedUrls.add(url);
+      console.log(`🆕 New content found: ${url}`);
+      
+      // Analyze the content
+      const result = await this.analyzeContent(url, 'content');
+      
+      if (result && result.summary) {
+        this.handleAnalysisResult(element, result, url);
+      }
+      
+    } catch (error) {
+      console.error('❌ Error analyzing element:', error);
+    }
+  }
+
   async analyzeReel(reelElement, index) {
     try {
       // Extract URL from reel - try multiple selectors
@@ -317,3 +402,11 @@ class InstagramAIDetector {
 
 // Initialize the detector
 const detector = new InstagramAIDetector();
+
+// Add global test function for debugging
+window.testPawPrint = () => {
+  console.log('🧪 Testing PawPrint AI...');
+  detector.checkForNewContent();
+};
+
+console.log('💡 Type testPawPrint() in console to manually test detection');
